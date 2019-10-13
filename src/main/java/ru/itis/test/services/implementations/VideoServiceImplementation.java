@@ -26,32 +26,41 @@ public class VideoServiceImplementation implements VideoService {
 
     private IsoFile isoFile;
 
-    @Value("#{new Integer('${uploading.maximumVideoDuration}')}")
-    private Integer maximumVideoDuration;
+    @Value("#{new Double('${uploading.maximumVideoDurationInSeconds}')}")
+    private Double maximumVideoDuration;
 
     @Override
     public String uploadVideo(final MultipartFile multipartFile) {
+        //generate random file name
         final UUID fileName = UUID.randomUUID();
         final String fileExtension = Objects.requireNonNull(FilenameUtils.getExtension(multipartFile.getOriginalFilename()));
         final String fullFileName = fileName.toString() + "." + fileExtension;
         final String fullFilePath = SAVING_FOLDER + File.separator + fullFileName;
+
         final File newFile = new File(fullFilePath);
         if (!multipartFile.getOriginalFilename().isEmpty()) {
-            LOGGER.info("Saving video {} to LOCAL_STORAGE", fullFileName);
+            LOGGER.info("Saving video {}", fullFileName);
             final File defaultSavingFolder = DefaultFileSavingPathConfiguration.initSavingFolder();
             try (final InputStream inputStream = multipartFile.getInputStream()) {
+                //uploading
                 FileUtils.copyInputStreamToFile(inputStream, newFile);
+
+                //validating for duration
                 isoFile = new IsoFile(fullFilePath);
-                final double lengthInSeconds = (double)
+                final double actualVideoDurationInSeconds = (double)
                         isoFile.getMovieBox().getMovieHeaderBox().getDuration() /
                         isoFile.getMovieBox().getMovieHeaderBox().getTimescale();
-                if (lengthInSeconds > maximumVideoDuration) {
+                if (actualVideoDurationInSeconds > maximumVideoDuration) {
                     deleteFile(newFile);
+                    LOGGER.error("Uploading file duration invalid. Expected : {} sec. Actual: {} sec.", maximumVideoDuration, actualVideoDurationInSeconds);
                     return "Invalid duration";
                 }
+
+                //validating for file availability
                 for (final File existingFile : Objects.requireNonNull(defaultSavingFolder.listFiles())) {
                     if (FileUtils.contentEquals(existingFile, newFile)) {
                         deleteFile(newFile);
+                        LOGGER.error("Uploading file already exists. Existing file: {}", existingFile.getName());
                         return "File already exists";
                     }
                 }
@@ -61,6 +70,7 @@ public class VideoServiceImplementation implements VideoService {
                 return "Error saving file";
             }
 
+            LOGGER.info("Uploaded file {}", fileName);
             return "OK";
         } else {
             return "Server error - empty file";
