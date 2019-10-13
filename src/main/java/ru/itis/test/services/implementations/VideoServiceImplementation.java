@@ -52,7 +52,7 @@ public class VideoServiceImplementation implements VideoService {
                         isoFile.getMovieBox().getMovieHeaderBox().getTimescale();
                 if (actualVideoDurationInSeconds > maximumVideoDuration) {
                     deleteFile(newFile);
-                    LOGGER.error("Uploading file duration invalid. Expected : {} sec. Actual: {} sec.", maximumVideoDuration, actualVideoDurationInSeconds);
+                    LOGGER.warn("Uploading file duration invalid. Expected : {} sec. Actual: {} sec.", maximumVideoDuration, actualVideoDurationInSeconds);
                     return "Invalid duration";
                 }
 
