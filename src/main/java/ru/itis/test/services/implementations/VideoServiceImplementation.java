@@ -42,7 +42,7 @@ public class VideoServiceImplementation implements VideoService {
             try (final InputStream inputStream = multipartFile.getInputStream()) {
                 FileUtils.copyInputStreamToFile(inputStream, newFile);
                 isoFile = new IsoFile(fullFilePath);
-                double lengthInSeconds = (double)
+                final double lengthInSeconds = (double)
                         isoFile.getMovieBox().getMovieHeaderBox().getDuration() /
                         isoFile.getMovieBox().getMovieHeaderBox().getTimescale();
                 if (lengthInSeconds > maximumVideoDuration) {
@@ -68,7 +68,7 @@ public class VideoServiceImplementation implements VideoService {
 
     }
 
-    private boolean deleteFile(File file) {
+    private boolean deleteFile(final File file) {
         return (file != null && file.exists() && file.isFile()) && file.delete();
     }
 }
