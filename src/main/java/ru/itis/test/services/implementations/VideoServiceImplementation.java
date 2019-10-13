@@ -60,13 +60,13 @@ public class VideoServiceImplementation implements VideoService {
                 for (final File existingFile : Objects.requireNonNull(defaultSavingFolder.listFiles())) {
                     if (FileUtils.contentEquals(existingFile, newFile)) {
                         deleteFile(newFile);
-                        LOGGER.error("Uploading file already exists. Existing file: {}", existingFile.getName());
+                        LOGGER.warn("Uploading file already exists. Existing file: {}", existingFile.getName());
                         return "File already exists";
                     }
                 }
 
             } catch (final IOException e) {
-                LOGGER.error("Error saving file {}", fullFileName);
+                LOGGER.error("Error saving file {}", fullFileName, e);
                 return "Error saving file";
             }
 
