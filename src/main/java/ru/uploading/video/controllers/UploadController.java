@@ -40,7 +40,7 @@ public class UploadController {
     /**
      * MP4 Content-Type
      */
-    private final String MP4_CONTENT_TYPE = "video/mp4";
+    private static final String MP4_CONTENT_TYPE = "video/mp4";
 
     /**
      * Uploading video endpoint
