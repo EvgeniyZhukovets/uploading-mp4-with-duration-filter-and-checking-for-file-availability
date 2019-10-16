@@ -1,4 +1,4 @@
-package ru.itis.test.controllers;
+package ru.uploading.video.controllers;
 
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import ru.itis.test.dto.ResponseDto;
-import ru.itis.test.services.VideoService;
+import ru.uploading.video.dto.ResponseDto;
+import ru.uploading.video.services.VideoService;
 
 import java.util.Objects;
 

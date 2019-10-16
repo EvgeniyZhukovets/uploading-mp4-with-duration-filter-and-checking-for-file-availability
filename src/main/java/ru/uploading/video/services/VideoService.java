@@ -1,7 +1,7 @@
-package ru.itis.test.services;
+package ru.uploading.video.services;
 
 import org.springframework.web.multipart.MultipartFile;
-import ru.itis.test.dto.ResponseDto;
+import ru.uploading.video.dto.ResponseDto;
 
 public interface VideoService {
 

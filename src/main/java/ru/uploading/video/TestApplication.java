@@ -1,4 +1,4 @@
-package ru.itis.test;
+package ru.uploading.video;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,7 +24,7 @@ public class TestApplication {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("ru.itis.test.controllers"))
+                .apis(RequestHandlerSelectors.basePackage("ru.uploading.video.controllers"))
                 .paths(PathSelectors.any())
                 .build();
     }

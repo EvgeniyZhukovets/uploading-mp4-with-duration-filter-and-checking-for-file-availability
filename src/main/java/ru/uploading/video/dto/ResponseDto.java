@@ -1,4 +1,4 @@
-package ru.itis.test.dto;
+package ru.uploading.video.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,6 +8,6 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public class ResponseDto {
 
-    private String status;
+    private String message;
     private HttpStatus httpStatus;
 }
