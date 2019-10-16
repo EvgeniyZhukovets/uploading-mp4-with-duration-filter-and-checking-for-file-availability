@@ -6,6 +6,7 @@ import java.io.File;
 
 @UtilityClass
 public class FileUtil {
+
     /**
      * Deleting directory
      */
