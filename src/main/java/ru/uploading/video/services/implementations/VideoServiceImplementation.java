@@ -56,28 +56,15 @@ public class VideoServiceImplementation implements VideoService {
             final File defaultSavingFolder = DefaultFileSavingPathConfiguration.initSavingFolder();
             try (final InputStream inputStream = multipartFile.getInputStream()) {
                 //uploading
-                org.apache.commons.io.FileUtils.copyInputStreamToFile(inputStream, uploadingFileInTempFolder);
+                FileUtils.copyInputStreamToFile(inputStream, uploadingFileInTempFolder);
 
                 //validating for duration
-                isoFile = new IsoFile(uploadingFileInTempFolder);
-                final double actualVideoDurationInSeconds = (double)
-                        isoFile.getMovieBox().getMovieHeaderBox().getDuration() /
-                        isoFile.getMovieBox().getMovieHeaderBox().getTimescale();
-                if (actualVideoDurationInSeconds > maximumVideoDuration) {
-                    FileUtil.deleteFolder(uploadingFileInTempFolder);
-                    log.warn("Uploading file duration invalid. Expected : {} sec. Actual: {} sec.", maximumVideoDuration, actualVideoDurationInSeconds);
+                if (isDurationInvalid(uploadingFileInTempFolder))
                     return new ResponseDto("Invalid duration", HttpStatus.BAD_REQUEST);
-                }
-                isoFile.close();
 
                 //validating for file availability
-                for (final File existingFile : Objects.requireNonNull(defaultSavingFolder.listFiles())) {
-                    if (existingFile.isFile() && org.apache.commons.io.FileUtils.contentEquals(existingFile, uploadingFileInTempFolder)) {
-                        FileUtil.deleteFolder(uploadingFileInTempFolder);
-                        log.warn("Uploading file already exists. Existing file: {}", existingFile.getName());
-                        return new ResponseDto("File already exists", HttpStatus.BAD_REQUEST);
-                    }
-                }
+                if (isFileAlreadyExists(uploadingFileInTempFolder, defaultSavingFolder))
+                    return new ResponseDto("File already exists", HttpStatus.BAD_REQUEST);
 
                 //moving file from temp directory to default saving directory
                 FileUtils.moveFileToDirectory(uploadingFileInTempFolder, new File(DefaultFileSavingPathConfiguration.SAVING_FOLDER), false);
@@ -96,5 +83,30 @@ public class VideoServiceImplementation implements VideoService {
             return new ResponseDto("Server error - empty file", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+    }
+
+    private boolean isFileAlreadyExists(final File uploadingFileInTempFolder, final File defaultSavingFolder) throws IOException {
+        for (final File existingFile : Objects.requireNonNull(defaultSavingFolder.listFiles())) {
+            if (existingFile.isFile() && FileUtils.contentEquals(existingFile, uploadingFileInTempFolder)) {
+                FileUtil.deleteFolder(uploadingFileInTempFolder);
+                log.warn("Uploading file already exists. Existing file: {}", existingFile.getName());
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isDurationInvalid(final File uploadingFileInTempFolder) throws IOException {
+        isoFile = new IsoFile(uploadingFileInTempFolder);
+        final double actualVideoDurationInSeconds = (double)
+                isoFile.getMovieBox().getMovieHeaderBox().getDuration() /
+                isoFile.getMovieBox().getMovieHeaderBox().getTimescale();
+        if (actualVideoDurationInSeconds > maximumVideoDuration) {
+            FileUtil.deleteFolder(uploadingFileInTempFolder);
+            log.warn("Uploading file duration invalid. Expected : {} sec. Actual: {} sec.", maximumVideoDuration, actualVideoDurationInSeconds);
+            return true;
+        }
+        isoFile.close();
+        return false;
     }
 }
