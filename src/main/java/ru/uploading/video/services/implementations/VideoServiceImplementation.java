@@ -35,6 +35,11 @@ public class VideoServiceImplementation implements VideoService {
     private Double maximumVideoDuration;
 
     /**
+     * Default saving folder
+     */
+    private final File defaultSavingFolder = DefaultFileSavingPathConfiguration.initSavingFolder();
+
+    /**
      * Uploading video business logic
      */
     @Override
@@ -53,7 +58,6 @@ public class VideoServiceImplementation implements VideoService {
         final File uploadingFileInTempFolder = new File(fullFilePathInTempFolder);
         if (!multipartFile.getOriginalFilename().isEmpty()) {
             log.info("Saving video {}", fullFileName);
-            final File defaultSavingFolder = DefaultFileSavingPathConfiguration.initSavingFolder();
             try (final InputStream inputStream = multipartFile.getInputStream()) {
                 //uploading
                 FileUtils.copyInputStreamToFile(inputStream, uploadingFileInTempFolder);
