@@ -24,11 +24,6 @@ import java.util.UUID;
 public class VideoServiceImplementation implements VideoService {
 
     /**
-     * IsoParser container to gather info about MP4 file
-     */
-    private IsoFile isoFile;
-
-    /**
      * Maximum video duration parameter
      */
     @Value("#{new Double('${uploading.maximumVideoDurationInSeconds}')}")
@@ -101,7 +96,8 @@ public class VideoServiceImplementation implements VideoService {
     }
 
     private boolean isDurationInvalid(final File uploadingFileInTempFolder) throws IOException {
-        isoFile = new IsoFile(uploadingFileInTempFolder);
+        //IsoParser container to gather info about MP4 file
+        final IsoFile isoFile = new IsoFile(uploadingFileInTempFolder);
         final double actualVideoDurationInSeconds = (double)
                 isoFile.getMovieBox().getMovieHeaderBox().getDuration() /
                 isoFile.getMovieBox().getMovieHeaderBox().getTimescale();
