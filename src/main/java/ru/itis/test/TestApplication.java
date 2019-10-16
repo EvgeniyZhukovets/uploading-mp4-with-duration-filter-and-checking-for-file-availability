@@ -17,6 +17,9 @@ public class TestApplication {
         SpringApplication.run(TestApplication.class, args);
     }
 
+    /**
+     * Configuring Swagger
+     */
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
@@ -25,5 +28,4 @@ public class TestApplication {
                 .paths(PathSelectors.any())
                 .build();
     }
-
 }

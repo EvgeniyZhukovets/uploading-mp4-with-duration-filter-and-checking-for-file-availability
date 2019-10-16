@@ -1,9 +1,9 @@
 package ru.itis.test.services;
 
 import org.springframework.web.multipart.MultipartFile;
+import ru.itis.test.dto.ResponseDto;
 
 public interface VideoService {
 
-    String uploadVideo(MultipartFile multipartFile);
-
+    ResponseDto uploadVideo(MultipartFile multipartFile);
 }
