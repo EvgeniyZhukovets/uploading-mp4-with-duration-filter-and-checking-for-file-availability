@@ -73,10 +73,10 @@ public class VideoServiceImplementation implements VideoService {
                 //moving file from temp directory to default saving directory
                 FileUtils.moveFileToDirectory(uploadingFileInTempFolder, new File(DefaultFileSavingPathConfiguration.SAVING_FOLDER), false);
                 //delete temp folder
-                FileUtil.deleteFolder(uploadingFileInTempFolder);
+                FileUtil.safeFolderDelete(uploadingFileInTempFolder);
             } catch (final IOException e) {
-                FileUtil.deleteFolder(uploadingFileInTempFolder);
-                FileUtil.deleteFile(new File(DefaultFileSavingPathConfiguration.SAVING_FOLDER, fullFileName));
+                FileUtil.safeFolderDelete(uploadingFileInTempFolder);
+                FileUtil.safeFileDelete(new File(DefaultFileSavingPathConfiguration.SAVING_FOLDER, fullFileName));
                 log.error("Error saving file {}", fullFileName, e);
                 return new ResponseDto("Error saving file", HttpStatus.INTERNAL_SERVER_ERROR);
             }
@@ -92,7 +92,7 @@ public class VideoServiceImplementation implements VideoService {
     private boolean isFileAlreadyExists(final File uploadingFileInTempFolder, final File defaultSavingFolder) throws IOException {
         for (final File existingFile : Objects.requireNonNull(defaultSavingFolder.listFiles())) {
             if (existingFile.isFile() && FileUtils.contentEquals(existingFile, uploadingFileInTempFolder)) {
-                FileUtil.deleteFolder(uploadingFileInTempFolder);
+                FileUtil.safeFolderDelete(uploadingFileInTempFolder);
                 log.warn("Uploading file already exists. Existing file: {}", existingFile.getName());
                 return true;
             }
@@ -106,7 +106,7 @@ public class VideoServiceImplementation implements VideoService {
                 isoFile.getMovieBox().getMovieHeaderBox().getDuration() /
                 isoFile.getMovieBox().getMovieHeaderBox().getTimescale();
         if (actualVideoDurationInSeconds > maximumVideoDuration) {
-            FileUtil.deleteFolder(uploadingFileInTempFolder);
+            FileUtil.safeFolderDelete(uploadingFileInTempFolder);
             log.warn("Uploading file duration invalid. Expected : {} sec. Actual: {} sec.", maximumVideoDuration, actualVideoDurationInSeconds);
             return true;
         }

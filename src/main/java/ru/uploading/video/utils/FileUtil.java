@@ -10,14 +10,14 @@ public class FileUtil {
     /**
      * Deleting directory
      */
-    public boolean deleteFolder(final File file) {
+    public boolean safeFolderDelete(final File file) {
         return (file != null && file.exists() && file.isDirectory()) && file.delete();
     }
 
     /**
      * Deleting file
      */
-    public boolean deleteFile(final File file) {
+    public boolean safeFileDelete(final File file) {
         return (file != null && file.exists() && file.isFile()) && file.delete();
     }
 }
