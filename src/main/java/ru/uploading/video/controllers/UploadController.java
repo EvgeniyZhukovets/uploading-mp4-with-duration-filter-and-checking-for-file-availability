@@ -25,7 +25,7 @@ public class UploadController {
     /**
      * Constructor for {@link UploadController}. Injects all necessary dependencies
      *
-     * @param videoService video service
+     * @param videoService video services
      */
     @Autowired
     public UploadController(final VideoService videoService) {
@@ -33,7 +33,7 @@ public class UploadController {
     }
 
     /**
-     * Base path for this controller
+     * Base path for this controllers
      */
     public static final String BASE_UPLOADING_PATH = "/api/v1/upload";
 
